@@ -166,6 +166,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import NewItemDialog from "../items/new-item-dialog";
+import NewCollectionDialog from "../collections/new-collection-dialog";
 
 interface TopBarProps {
   onMenuClick?: () => void;
@@ -279,6 +281,12 @@ export default function TopBar({ onMenuClick, isPro }: TopBarProps) {
           New Item
         </Button>
       </div>
+
+      <NewItemDialog open={newItemOpen} onOpenChange={setNewItemOpen} />
+      <NewCollectionDialog
+        open={newCollectionOpen}
+        onOpenChange={setNewCollectionOpen}
+      />
     </header>
   );
 }
