@@ -115,23 +115,18 @@ interface User {
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
-
   user: User | null;
-
   isPro?: boolean;
 }
 
-export default function DashboardLayout({
-  user,
-
-  isPro,
-}: DashboardLayoutProps) {
+export default function DashboardLayout({ user, isPro }: DashboardLayoutProps) {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   return (
     <TooltipProvider>
       <div className="flex h-screen flex-col">
+        {/* Top Bar */}
         <TopBar
           onMenuClick={() => setIsMobileSidebarOpen(true)}
           isPro={isPro}

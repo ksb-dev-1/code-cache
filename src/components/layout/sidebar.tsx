@@ -321,7 +321,7 @@ export default function Sidebar({ isCollapsed, onToggle, user }: SidebarProps) {
       </div>
 
       {/* Scrollable content */}
-      <div className="flex-1 overflow-y-auto p-4">
+      <div className="flex-1 overflow-y-auto overflow-x-hidden p-4">
         {/* Types Section */}
         <div className="space-y-1">
           {!isCollapsed && (
