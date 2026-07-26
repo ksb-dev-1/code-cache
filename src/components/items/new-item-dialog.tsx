@@ -2,10 +2,14 @@
 
 import {
   Dialog,
+  DialogClose,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Field, FieldGroup } from "@/components/ui/field";
 import {
   Select,
   SelectContent,
@@ -17,6 +21,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Plus } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 
 interface NewItemDialogProps {
   open: boolean;
@@ -30,81 +36,110 @@ export default function NewItemDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-125">
-        <DialogHeader>
-          <DialogTitle>New Item</DialogTitle>
-        </DialogHeader>
+        <form>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/20">
+                <Plus className="h-4 w-4 text-primary" />
+              </div>
+              New Item
+            </DialogTitle>
 
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <Label>Type</Label>
-            <Select>
-              <SelectTrigger>
-                <SelectValue placeholder="Select type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="snippet">Snippet</SelectItem>
-                <SelectItem value="prompt">Prompt</SelectItem>
-                <SelectItem value="command">Command</SelectItem>
-                <SelectItem value="note">Note</SelectItem>
-                <SelectItem value="link">Link</SelectItem>
-                <SelectItem value="file">File</SelectItem>
-                <SelectItem value="image">Image</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+            <DialogDescription>
+              Create a new item by providing its details below.
+            </DialogDescription>
+          </DialogHeader>
 
-          <div className="space-y-2">
-            <Label>Title</Label>
-            <Input placeholder="Enter title" />
-          </div>
+          <Separator className="my-4" />
 
-          <div className="space-y-2">
-            <Label>Description</Label>
-            <Input placeholder="Enter description" />
-          </div>
+          <FieldGroup>
+            <Field>
+              <Label htmlFor="type">Type</Label>
+              <Select name="type">
+                <SelectTrigger id="type">
+                  <SelectValue placeholder="Select type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="snippet">Snippet</SelectItem>
+                  <SelectItem value="prompt">Prompt</SelectItem>
+                  <SelectItem value="command">Command</SelectItem>
+                  <SelectItem value="note">Note</SelectItem>
+                  <SelectItem value="link">Link</SelectItem>
+                  <SelectItem value="file">File</SelectItem>
+                  <SelectItem value="image">Image</SelectItem>
+                </SelectContent>
+              </Select>
+            </Field>
 
-          <div className="space-y-2">
-            <Label>Language</Label>
-            <Select>
-              <SelectTrigger>
-                <SelectValue placeholder="Select language" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="javascript">JavaScript</SelectItem>
-                <SelectItem value="typescript">TypeScript</SelectItem>
-                <SelectItem value="python">Python</SelectItem>
-                <SelectItem value="java">Java</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+            <Field>
+              <Label htmlFor="title">Title</Label>
+              <Input id="title" name="title" placeholder="Enter title" />
+            </Field>
 
-          <div className="space-y-2">
-            <Label>Content</Label>
-            <Textarea placeholder="Enter content..." rows={6} />
-          </div>
+            <Field>
+              <Label htmlFor="description">Description</Label>
+              <Input
+                id="description"
+                name="description"
+                placeholder="Enter description"
+              />
+            </Field>
 
-          <div className="space-y-2">
-            <Label>URL</Label>
-            <Input placeholder="https://example.com" />
-          </div>
+            <Field>
+              <Label htmlFor="language">Language</Label>
+              <Select name="language">
+                <SelectTrigger id="language">
+                  <SelectValue placeholder="Select language" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="javascript">JavaScript</SelectItem>
+                  <SelectItem value="typescript">TypeScript</SelectItem>
+                  <SelectItem value="python">Python</SelectItem>
+                  <SelectItem value="java">Java</SelectItem>
+                </SelectContent>
+              </Select>
+            </Field>
 
-          <div className="space-y-2">
-            <Label>File</Label>
-            <Input type="file" />
-          </div>
+            <Field>
+              <Label htmlFor="content">Content</Label>
+              <Textarea
+                id="content"
+                name="content"
+                placeholder="Enter content..."
+                rows={6}
+              />
+            </Field>
 
-          <div className="space-y-2">
-            <Label>Tags</Label>
-            <Input placeholder="tag1, tag2, tag3" />
-          </div>
+            <Field>
+              <Label htmlFor="url">URL</Label>
+              <Input id="url" name="url" placeholder="https://example.com" />
+            </Field>
 
-          <div className="flex justify-end gap-3 pt-2">
-            <Button variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
-            </Button>
-            <Button>Create</Button>
-          </div>
-        </div>
+            <Field>
+              <Label htmlFor="file">File</Label>
+              <Input id="file" name="file" type="file" />
+            </Field>
+
+            <Field>
+              <Label htmlFor="tags">Tags</Label>
+              <Input id="tags" name="tags" placeholder="tag1, tag2, tag3" />
+            </Field>
+          </FieldGroup>
+
+          <DialogFooter className="mt-6">
+            <DialogClose asChild>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => onOpenChange(false)}
+              >
+                Cancel
+              </Button>
+            </DialogClose>
+
+            <Button type="submit">Create</Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );
