@@ -34,7 +34,7 @@
 //   //   const { openSearch } = useSearch();
 
 //   return (
-//     <header className="flex h-14 items-center gap-2 sm:gap-4 border-b border-border px-3 sm:px-6">
+//     <header className="flex h-14 items-center gap-2 md:gap-4 border-b border-border px-3 md:px-6">
 //       {/* Mobile menu button */}
 //       <Button
 //         variant="ghost"
@@ -51,35 +51,35 @@
 //         className="flex items-center gap-2 shrink-0 text-brand"
 //       >
 //         <Layers className="h-5 w-5" />
-//         <span className="hidden sm:inline text-lg font-bold">DevDock</span>
+//         <span className="hidden md:inline text-lg font-bold">DevDock</span>
 //       </Link>
 
 //       {/* Search trigger - full bar on sm+, icon-only on mobile */}
 //       <button
 //         type="button"
 //         // onClick={openSearch}
-//         className="relative mx-auto hidden sm:flex max-w-md flex-1 items-center h-9 rounded-md border border-input bg-background px-3 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
+//         className="relative mx-auto hidden md:flex max-w-md flex-1 items-center h-9 rounded-md border border-input bg-background px-3 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
 //       >
 //         <Search className="mr-2 h-4 w-4" />
 //         <span className="flex-1 text-left">Search items...</span>
-//         <kbd className="pointer-events-none hidden h-5 select-none items-center gap-1 rounded border border-border bg-muted px-1.5 font-mono text-xs font-medium sm:flex">
+//         <kbd className="pointer-events-none hidden h-5 select-none items-center gap-1 rounded border border-border bg-muted px-1.5 font-mono text-xs font-medium md:flex">
 //           ⌘K
 //         </kbd>
 //       </button>
 
 //       {/* Mobile search icon */}
-//       <div className="flex-1 sm:hidden" />
+//       <div className="flex-1 md:hidden" />
 //       <Button
 //         variant="ghost"
 //         size="icon"
-//         className="sm:hidden shrink-0"
+//         className="md:hidden shrink-0"
 //         // onClick={openSearch}
 //       >
 //         <Search className="h-5 w-5" />
 //       </Button>
 
 //       {/* Actions */}
-//       <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+//       <div className="flex items-center gap-1 md:gap-2 shrink-0">
 //         {!isPro && (
 //           <Button
 //             variant="ghost"
@@ -103,7 +103,7 @@
 //         {/* Mobile: + dropdown */}
 //         <DropdownMenu>
 //           <DropdownMenuTrigger asChild>
-//             <Button size="icon" className="sm:hidden">
+//             <Button size="icon" className="md:hidden">
 //               <Plus className="h-5 w-5" />
 //             </Button>
 //           </DropdownMenuTrigger>
@@ -123,14 +123,14 @@
 //         <Button
 //           variant="outline"
 //           size="sm"
-//           className="hidden sm:inline-flex"
+//           className="hidden md:inline-flex"
 //           onClick={() => setNewCollectionOpen(true)}
 //         >
 //           New Collection
 //         </Button>
 //         <Button
 //           size="sm"
-//           className="hidden sm:inline-flex"
+//           className="hidden md:inline-flex"
 //           onClick={() => setNewItemOpen(true)}
 //         >
 //           New Item
@@ -179,7 +179,7 @@ export default function TopBar({ onMenuClick, isPro }: TopBarProps) {
   const [newCollectionOpen, setNewCollectionOpen] = useState(false);
 
   return (
-    <header className="flex h-14 items-center gap-2 sm:gap-4 border-b border-border px-3 sm:px-6">
+    <header className="flex h-14 items-center gap-2 md:gap-4 border-b border-border px-3 md:px-6">
       {/* Mobile menu button */}
       <Button
         variant="ghost"
@@ -196,7 +196,7 @@ export default function TopBar({ onMenuClick, isPro }: TopBarProps) {
         className="flex items-center gap-2 shrink-0 text-brand"
       >
         <Layers className="h-5 w-5" />
-        <span className="hidden sm:inline text-lg font-bold">DevDock</span>
+        <span className="hidden md:inline text-lg font-bold">DevDock</span>
       </Link>
 
       {/* Search trigger - full bar on sm+, icon-only on mobile */}
@@ -217,14 +217,14 @@ export default function TopBar({ onMenuClick, isPro }: TopBarProps) {
       <Button
         variant="ghost"
         size="icon"
-        className="sm:hidden shrink-0"
+        className="md:hidden shrink-0"
         // onClick={openSearch}
       >
         <Search className="h-5 w-5" />
       </Button>
 
       {/* Actions */}
-      <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+      <div className="flex items-center gap-1 md:gap-2 shrink-0">
         {!isPro && (
           <Button
             variant="ghost"
@@ -248,7 +248,7 @@ export default function TopBar({ onMenuClick, isPro }: TopBarProps) {
         {/* Mobile: + dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button size="icon" className="sm:hidden">
+            <Button size="icon" className="md:hidden">
               <Plus className="h-5 w-5" />
             </Button>
           </DropdownMenuTrigger>
@@ -268,14 +268,14 @@ export default function TopBar({ onMenuClick, isPro }: TopBarProps) {
         <Button
           variant="outline"
           size="sm"
-          className="hidden sm:inline-flex"
+          className="hidden md:inline-flex"
           onClick={() => setNewCollectionOpen(true)}
         >
           New Collection
         </Button>
         <Button
           size="sm"
-          className="hidden sm:inline-flex"
+          className="hidden md:inline-flex"
           onClick={() => setNewItemOpen(true)}
         >
           New Item
