@@ -50,7 +50,7 @@ export default function NewItemDialog({
             </DialogDescription>
           </DialogHeader>
 
-          <Separator className="my-4" />
+          <Separator className="mt-4 mb-8" />
 
           <FieldGroup>
             <Field>
