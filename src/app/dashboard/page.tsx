@@ -57,11 +57,20 @@
 //   );
 // }
 // ======================================================================================
+import { redirect } from "next/navigation";
+
+import { auth } from "@/auth";
 import DashboardLayout from "@/components/layout/dashboard-layout";
 
 export default async function DashboardPage() {
+  const session = await auth();
+
+  if (!session?.user) {
+    redirect("/sign-in");
+  }
+
   return (
-    <DashboardLayout user={{ id: "123", name: "John", email: "" }}>
+    <DashboardLayout user={session.user}>
       <div className="max-w-6xl mx-auto space-y-8">
         {/* Header */}
         <div>

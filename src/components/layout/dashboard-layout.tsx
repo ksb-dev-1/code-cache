@@ -102,20 +102,17 @@
 "use client";
 
 import { useState } from "react";
-import TopBar from "@/components/layout/top-bar";
-import Sidebar from "@/components/layout/sidebar";
-import { TooltipProvider } from "../ui/tooltip";
 
-interface User {
-  id: string;
-  name: string | null;
-  email: string;
-  image?: string | null;
-}
+import { Session } from "next-auth";
+
+import Sidebar from "@/components/layout/sidebar";
+import TopBar from "@/components/layout/top-bar";
+
+import { TooltipProvider } from "../ui/tooltip";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
-  user: User | null;
+  user: Session["user"];
   isPro?: boolean;
 }
 

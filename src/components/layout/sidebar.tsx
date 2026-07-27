@@ -255,37 +255,32 @@
 
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
+
+import Link from "next/link";
 import { usePathname } from "next/navigation";
+
 import {
   ChevronDown,
   ChevronRight,
-  PanelLeftClose,
   PanelLeft,
+  PanelLeftClose,
 } from "lucide-react";
+import { Session } from "next-auth";
 
+import UserAvatar from "@/components/shared/user-avatar";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
-
-import UserAvatar from "@/components/shared/user-avatar";
-
-interface User {
-  id: string;
-  name: string | null;
-  email: string;
-  image?: string | null;
-}
 
 interface SidebarProps {
   isCollapsed: boolean;
   onToggle: () => void;
-  user: User | null;
+  user: Session["user"];
 }
 
 export default function Sidebar({ isCollapsed, onToggle, user }: SidebarProps) {
