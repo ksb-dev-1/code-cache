@@ -1,12 +1,12 @@
-import Google from "next-auth/providers/google";
-import GitHub from "next-auth/providers/github";
 import type { NextAuthConfig } from "next-auth";
+import GitHub from "next-auth/providers/github";
+import Google from "next-auth/providers/google";
 
 export default {
   providers: [Google, GitHub],
   pages: {
     signIn: "/sign-in",
-    error: "/auth-error",
+    // error: "/auth-error",
   },
   callbacks: {
     async signIn() {
@@ -29,6 +29,10 @@ export default {
         if (token?.id) {
           session.user.id = token.id as string;
           session.user.isPro = Boolean(token.isPro);
+
+          session.user.name = token.name as string;
+          session.user.email = token.email as string;
+          session.user.image = token.picture as string;
         }
         return session;
       } catch (error) {

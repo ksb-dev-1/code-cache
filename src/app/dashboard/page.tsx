@@ -10,19 +10,15 @@
 // // import { getPinnedItems, getRecentItems, getDashboardStats, getItemTypesWithCounts } from '@/lib/db/items';
 // // import { getEditorPreferences } from '@/lib/db/users';
 // // import { DASHBOARD_COLLECTIONS_LIMIT, DASHBOARD_RECENT_ITEMS_LIMIT } from '@/lib/constants/pagination';
-
 // export default async function DashboardPage() {
 //   //   const session = await auth();
-
 //   //   if (!session?.user?.id) {
 //   //     redirect('/sign-in');
 //   //   }
-
 //   //   const user = await prisma.user.findUnique({
 //   //     where: { id: session.user.id },
 //   //     select: { id: true, name: true, email: true, image: true },
 //   //   });
-
 //   //   const [collections, pinnedItems, recentItems, stats, itemTypes, sidebarCollections, editorPreferences] = user
 //   //     ? await Promise.all([
 //   //         getRecentCollections(user.id, DASHBOARD_COLLECTIONS_LIMIT),
@@ -34,7 +30,6 @@
 //   //         getEditorPreferences(user.id),
 //   //       ])
 //   //     : [[], [], [], { totalItems: 0, totalCollections: 0, favoriteItems: 0, favoriteCollections: 0 }, [], { favorites: [], recents: [] }, undefined];
-
 //   return (
 //     <DashboardLayout
 //       //   itemTypes={itemTypes}
@@ -49,25 +44,19 @@
 //           <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
 //           <p className="text-muted-foreground">Your developer knowledge hub</p>
 //         </div>
-
 //         {/* Stats Cards */}
 //         {/* <StatsCards stats={stats} /> */}
-
 //         {/* Collections */}
 //         {/* <CollectionsSection collections={collections} /> */}
-
 //         {/* Pinned Items */}
 //         {/* <PinnedItems items={pinnedItems} /> */}
-
 //         {/* Recent Items */}
 //         {/* <RecentItems items={recentItems} /> */}
 //       </div>
 //     </DashboardLayout>
 //   );
 // }
-
 // ======================================================================================
-
 import DashboardLayout from "@/components/layout/dashboard-layout";
 
 export default async function DashboardPage() {
