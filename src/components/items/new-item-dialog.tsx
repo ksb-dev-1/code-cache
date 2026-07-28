@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 
+import { toast } from "sonner";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -20,6 +22,7 @@ import {
 } from "@/components/ui/select";
 
 import CodeEditor from "./code-editor";
+import FileUpload from "./file-upload";
 import MarkdownEditor from "./markdown-editor";
 
 interface NewItemDialogProps {
@@ -54,7 +57,7 @@ export default function NewItemDialog({
   onOpenChange,
 }: NewItemDialogProps) {
   const [typeName, setTypeName] = useState<ItemTypeName>("snippet");
-
+  const [isLoading, setIsLoading] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [content, setContent] = useState("");
@@ -180,25 +183,13 @@ export default function NewItemDialog({
 
           {showFileUpload && (
             <div className="space-y-2">
-              <Label htmlFor="file">
-                {typeName === "image" ? "Image" : "File"}
-              </Label>
-
-              <Input
-                id="file"
-                type="file"
-                accept={typeName === "image" ? "image/*" : undefined}
-                onChange={(e) => {
-                  const selectedFile = e.target.files?.[0] ?? null;
-                  //setFileData(selectedFile);
-                }}
+              <Label>{typeName === "image" ? "Image" : "File"} *</Label>
+              <FileUpload
+                itemType={typeName as "file" | "image"}
+                onUploadComplete={setFileData}
+                onUploadError={(error) => toast.error(error)}
+                disabled={isLoading}
               />
-
-              {fileData && (
-                <p className="text-sm text-muted-foreground">
-                  {fileData.fileName}
-                </p>
-              )}
             </div>
           )}
 
