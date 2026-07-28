@@ -7,7 +7,6 @@ import Image from "next/image";
 import { File, Image as ImageIcon, Loader2, Upload, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-// import { FILE_CONSTRAINTS, formatFileSize } from "@/lib/r2";
 import { cn } from "@/lib/utils";
 
 const FILE_CONSTRAINTS = {
