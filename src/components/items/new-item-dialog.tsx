@@ -19,8 +19,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-// import CodeEditor from "./code-editor";
-// import MarkdownEditor from "./markdown-editor";
+import CodeEditor from "./code-editor";
+import MarkdownEditor from "./markdown-editor";
 
 interface NewItemDialogProps {
   open: boolean;
@@ -149,7 +149,7 @@ export default function NewItemDialog({
             <div className="space-y-2">
               <Label>Content</Label>
 
-              {/* {showLanguageField ? (
+              {showLanguageField ? (
                 <CodeEditor
                   value={content}
                   onChange={setContent}
@@ -161,7 +161,7 @@ export default function NewItemDialog({
                   onChange={setContent}
                   placeholder="Write your content..."
                 />
-              )} */}
+              )}
             </div>
           )}
 
