@@ -18,13 +18,14 @@ model User {
   emailVerified DateTime?
   name          String?
   image         String?
-  password      String?
   isPro         Boolean   @default(false)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
   // Relations
-  items Item[]
+  items       Item[]
+  itemTypes   ItemType[]
+  collections Collection[]
 
   accounts Account[]
   sessions Session[]
@@ -102,13 +103,13 @@ model Item {
 
   // Relations
   userId     String
-  user       User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   itemTypeId String
-  // itemType   ItemType @relation(fields: [itemTypeId], references: [id])
-  // tags       Tag[]    @relation("ItemTags")
+  itemType   ItemType @relation(fields: [itemTypeId], references: [id])
+  tags       Tag[]    @relation("ItemTags")
 
   // Many-to-many with collections
-  // collections ItemCollection[]
+  collections ItemCollection[]
 
   @@index([userId])
   @@index([itemTypeId])
@@ -117,4 +118,78 @@ model Item {
   @@index([userId, isFavorite])
   @@index([userId, updatedAt])
   @@map("items")
+}
+
+// ============================================
+// ITEM TYPE
+// ============================================
+model ItemType {
+  id       String  @id @default(cuid())
+  name     String
+  icon     String
+  color    String
+  isSystem Boolean @default(false)
+
+  // Relations
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items  Item[]
+
+  // Collections that use this as default type
+  defaultForCollections Collection[]
+
+  @@unique([name, userId])
+  @@map("item_types")
+}
+
+// ============================================
+// COLLECTION
+// ============================================
+model Collection {
+  id          String   @id @default(cuid())
+  name        String
+  description String?  @db.Text
+  isFavorite  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  defaultTypeId String?
+  defaultType   ItemType? @relation(fields: [defaultTypeId], references: [id])
+
+  // Many-to-many with items
+  items ItemCollection[]
+
+  @@index([userId])
+  @@index([userId, isFavorite])
+  @@index([userId, updatedAt])
+  @@map("collections")
+}
+
+// ============================================
+// ITEM-COLLECTION JOIN TABLE
+// ============================================
+model ItemCollection {
+  itemId       String
+  collectionId String
+  addedAt      DateTime @default(now())
+
+  item       Item       @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  collection Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+
+  @@id([itemId, collectionId])
+  @@map("item_collections")
+}
+
+// ============================================
+// TAG
+// ============================================
+model Tag {
+  id    String @id @default(cuid())
+  name  String @unique
+  items Item[] @relation("ItemTags")
+
+  @@map("tags")
 }
