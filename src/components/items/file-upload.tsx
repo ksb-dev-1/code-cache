@@ -81,6 +81,7 @@ export default function FileUpload({
   onUploadError,
   disabled = false,
 }: FileUploadProps) {
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -109,65 +110,65 @@ export default function FileUpload({
     [constraints, maxSizeMB],
   );
 
-  const uploadFile = useCallback(
-    async (file: File) => {
-      const error = validateFile(file);
-      if (error) {
-        onUploadError(error);
-        return;
-      }
+  const handleUpload = useCallback(async () => {
+    if (!selectedFile) return;
 
-      setIsUploading(true);
-      setUploadProgress(0);
+    const error = validateFile(selectedFile);
+    if (error) {
+      onUploadError(error);
+      return;
+    }
 
-      try {
-        const formData = new FormData();
-        formData.append("file", file);
-        formData.append("itemType", itemType);
+    setIsUploading(true);
+    setUploadProgress(0);
 
-        // Use XMLHttpRequest for progress tracking
-        const xhr = new XMLHttpRequest();
+    try {
+      const formData = new FormData();
+      formData.append("file", selectedFile);
+      formData.append("itemType", itemType);
 
-        const uploadPromise = new Promise<UploadedFile>((resolve, reject) => {
-          xhr.upload.onprogress = (event) => {
-            if (event.lengthComputable) {
-              const progress = Math.round((event.loaded / event.total) * 100);
-              setUploadProgress(progress);
-            }
-          };
+      // Use XMLHttpRequest for progress tracking
+      const xhr = new XMLHttpRequest();
 
-          xhr.onload = () => {
-            if (xhr.status >= 200 && xhr.status < 300) {
-              const response = JSON.parse(xhr.responseText);
-              if (response.success) {
-                resolve(response.data);
-              } else {
-                reject(new Error(response.error || "Upload failed"));
-              }
+      const uploadPromise = new Promise<UploadedFile>((resolve, reject) => {
+        xhr.upload.onprogress = (event) => {
+          if (event.lengthComputable) {
+            const progress = Math.round((event.loaded / event.total) * 100);
+            setUploadProgress(progress);
+          }
+        };
+
+        xhr.onload = () => {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            const response = JSON.parse(xhr.responseText);
+            if (response.success) {
+              resolve(response.data);
             } else {
-              const response = JSON.parse(xhr.responseText);
               reject(new Error(response.error || "Upload failed"));
             }
-          };
+          } else {
+            const response = JSON.parse(xhr.responseText);
+            reject(new Error(response.error || "Upload failed"));
+          }
+        };
 
-          xhr.onerror = () => reject(new Error("Network error"));
-        });
+        xhr.onerror = () => reject(new Error("Network error"));
+      });
 
-        xhr.open("POST", "/api/upload");
-        xhr.send(formData);
+      xhr.open("POST", "/api/upload");
+      xhr.send(formData);
 
-        const data = await uploadPromise;
-        setUploadedFile(data);
-        onUploadComplete(data);
-      } catch (err) {
-        onUploadError(err instanceof Error ? err.message : "Upload failed");
-      } finally {
-        setIsUploading(false);
-        setUploadProgress(0);
-      }
-    },
-    [itemType, validateFile, onUploadComplete, onUploadError],
-  );
+      const data = await uploadPromise;
+      setUploadedFile(data);
+      setSelectedFile(null); // Clear selected file after upload
+      onUploadComplete(data);
+    } catch (err) {
+      onUploadError(err instanceof Error ? err.message : "Upload failed");
+    } finally {
+      setIsUploading(false);
+      setUploadProgress(0);
+    }
+  }, [selectedFile, validateFile, itemType, onUploadComplete, onUploadError]);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -187,41 +188,60 @@ export default function FileUpload({
       e.stopPropagation();
       setIsDragging(false);
 
-      if (disabled || isUploading) return;
+      if (disabled || isUploading || uploadedFile) return;
 
       const files = e.dataTransfer.files;
       if (files.length > 0) {
-        uploadFile(files[0]);
+        const file = files[0];
+        const error = validateFile(file);
+        if (error) {
+          onUploadError(error);
+          return;
+        }
+        setSelectedFile(file);
       }
     },
-    [disabled, isUploading, uploadFile],
+    [disabled, isUploading, uploadedFile, validateFile, onUploadError],
   );
 
   const handleFileSelect = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const files = e.target.files;
       if (files && files.length > 0) {
-        uploadFile(files[0]);
+        const file = files[0];
+        const error = validateFile(file);
+        if (error) {
+          onUploadError(error);
+          return;
+        }
+        setSelectedFile(file);
       }
       // Reset input
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
     },
-    [uploadFile],
+    [validateFile, onUploadError],
   );
 
   const handleRemoveFile = useCallback(() => {
+    setSelectedFile(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  }, []);
+
+  const handleRemoveUploadedFile = useCallback(() => {
     setUploadedFile(null);
   }, []);
 
   const handleClick = useCallback(() => {
-    if (!disabled && !isUploading) {
+    if (!disabled && !isUploading && !uploadedFile) {
       fileInputRef.current?.click();
     }
-  }, [disabled, isUploading]);
+  }, [disabled, isUploading, uploadedFile]);
 
-  // Show uploaded file preview
+  // Show uploaded file preview (after successful upload)
   if (uploadedFile) {
     const isImage = itemType === "image";
 
@@ -258,7 +278,7 @@ export default function FileUpload({
             variant="ghost"
             size="icon"
             className="h-8 w-8 shrink-0"
-            onClick={handleRemoveFile}
+            onClick={handleRemoveUploadedFile}
             disabled={disabled}
           >
             <X className="h-4 w-4" />
@@ -268,7 +288,84 @@ export default function FileUpload({
     );
   }
 
-  // Show upload area
+  // Show selected file preview (before upload)
+  if (selectedFile) {
+    const isImage = itemType === "image";
+    const fileUrl = URL.createObjectURL(selectedFile);
+
+    return (
+      <div className="rounded-lg border border-border bg-card p-4">
+        <div className="flex items-start gap-3">
+          {isImage ? (
+            <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-md bg-muted">
+              <Image
+                src={fileUrl}
+                alt={selectedFile.name}
+                fill
+                sizes="64px"
+                className="object-cover"
+              />
+            </div>
+          ) : (
+            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-md bg-muted">
+              <File className="h-8 w-8 text-muted-foreground" />
+            </div>
+          )}
+
+          <div className="min-w-0 flex-1">
+            <p className="truncate font-medium text-sm">{selectedFile.name}</p>
+            <p className="text-muted-foreground text-xs">
+              {formatFileSize(selectedFile.size)}
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Button
+              type="button"
+              size="sm"
+              onClick={handleUpload}
+              disabled={disabled || isUploading}
+            >
+              {isUploading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Uploading...
+                </>
+              ) : (
+                "Upload"
+              )}
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 shrink-0"
+              onClick={handleRemoveFile}
+              disabled={disabled || isUploading}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+
+        {isUploading && (
+          <div className="mt-3">
+            <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
+              <div
+                className="h-full bg-primary transition-all duration-300"
+                style={{ width: `${uploadProgress}%` }}
+              />
+            </div>
+            <p className="mt-1 text-right text-muted-foreground text-xs">
+              {uploadProgress}%
+            </p>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // Show upload area (initial state)
   return (
     <div
       className={cn(
@@ -293,43 +390,25 @@ export default function FileUpload({
       />
 
       <div className="flex flex-col items-center gap-3">
-        {isUploading ? (
-          <>
-            <Loader2 className="h-10 w-10 animate-spin text-primary" />
-            <div className="space-y-1">
-              <p className="font-medium text-sm">Uploading...</p>
-              <p className="text-muted-foreground text-xs">{uploadProgress}%</p>
-            </div>
-            <div className="h-2 w-32 overflow-hidden rounded-full bg-muted">
-              <div
-                className="h-full bg-primary transition-all duration-300"
-                style={{ width: `${uploadProgress}%` }}
-              />
-            </div>
-          </>
-        ) : (
-          <>
-            <div className="rounded-full bg-muted p-3">
-              {itemType === "image" ? (
-                <ImageIcon className="h-6 w-6 text-muted-foreground" />
-              ) : (
-                <Upload className="h-6 w-6 text-muted-foreground" />
-              )}
-            </div>
-            <div className="space-y-1">
-              <p className="font-medium text-sm">
-                Drop {itemType === "image" ? "an image" : "a file"} here or
-                click to upload
-              </p>
-              <p className="text-muted-foreground text-xs">
-                Max {maxSizeMB} MB
-                {itemType === "image"
-                  ? " (PNG, JPG, GIF, WebP, SVG)"
-                  : " (PDF, TXT, MD, JSON, YAML, XML, CSV)"}
-              </p>
-            </div>
-          </>
-        )}
+        <div className="rounded-full bg-muted p-3">
+          {itemType === "image" ? (
+            <ImageIcon className="h-6 w-6 text-muted-foreground" />
+          ) : (
+            <Upload className="h-6 w-6 text-muted-foreground" />
+          )}
+        </div>
+        <div className="space-y-1">
+          <p className="font-medium text-sm">
+            Drop {itemType === "image" ? "an image" : "a file"} here or click to
+            upload
+          </p>
+          <p className="text-muted-foreground text-xs">
+            Max {maxSizeMB} MB
+            {itemType === "image"
+              ? " (PNG, JPG, GIF, WebP, SVG)"
+              : " (PDF, TXT, MD, JSON, YAML, XML, CSV)"}
+          </p>
+        </div>
       </div>
     </div>
   );
